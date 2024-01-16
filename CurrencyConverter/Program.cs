@@ -1,66 +1,82 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-
-
+﻿
 //GBP TO USD - 1 = 1.27
 //GBP TO EUR - 1 = 1.15
 //GBP TO YEN - 1 = 9.06
 //GBP TO ANG - 1 = 1065.19
 
 
-using System.Globalization;
-using System.Runtime.InteropServices;
+using CurrencyConverter;
+using System.Runtime.CompilerServices;
 
-var GBPTOUSD = 1.27455;
-var GBPTOEUR = 1.15003;
-var GBPTOYEN = 9.04795;
-var GBPTOANG = 1064.96000;
 
-RegionInfo usRegion = new RegionInfo("US");
-RegionInfo aoRegion = new RegionInfo("AO");
-RegionInfo eurRegion = new RegionInfo("IT");
-RegionInfo yenRegion = new RegionInfo("CN");
-CultureInfo euroCI = new CultureInfo("de-DE");
 
-Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-bool running = true;
+CurrencyExchangeRate rateMapper;
+CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
+
+
+
+
+
  string input = String.Empty;
 
-while (running)
-{
+
+
    
-    if (input.Length < 1)
-    {
-        Console.WriteLine($"The conversion rate to USD, using the current exchange rate is: {usRegion.CurrencySymbol}{Math.Round(GBPTOUSD, 2)}");
-        Console.WriteLine($"The conversion rate to EUR, using the current exchange rate is: {Math.Round(GBPTOEUR, 2)}{eurRegion.CurrencySymbol}");
-        Console.WriteLine($"The conversion rate to YEN, using the current exchange rate is: {Math.Round(GBPTOYEN, 2)}{yenRegion.CurrencySymbol}");
-        Console.WriteLine($"The conversion rate to ANG, using the current exchange rate is: {Math.Round(GBPTOANG, 2)}{aoRegion.CurrencySymbol}");
-    }
-    
+     rateMapper = new UsConversionRate();
+     symbolGenerator.SetRegionCurrencyTwoLetterValue("US");
+     Console.WriteLine($"The conversion rate to USD, using the current exchange rate is: {symbolGenerator.GetCurrencySymbol()}{Math.Round(rateMapper.GetConverstionRate(), 2)}");
+     symbolGenerator.SetRegionCurrencyTwoLetterValue("FR");
+     rateMapper = new EurConversionRate();
+     Console.WriteLine($"The conversion rate to EUR, using the current exchange rate is: {Math.Round(rateMapper.GetConverstionRate(), 2)}{symbolGenerator.GetCurrencySymbol()}");
+     symbolGenerator.SetRegionCurrencyTwoLetterValue("CN");
+     rateMapper = new YenConversionRate();
+     Console.WriteLine($"The conversion rate to YEN, using the current exchange rate is: {Math.Round(rateMapper.GetConverstionRate(), 2)}{symbolGenerator.GetCurrencySymbol()}");
+     symbolGenerator.SetRegionCurrencyTwoLetterValue("AO");
+     rateMapper = new AnConversionRate();
+     Console.WriteLine($"The conversion rate to ANG, using the current exchange rate is: {Math.Round(rateMapper.GetConverstionRate(), 2)}{symbolGenerator.GetCurrencySymbol()}");
+
+
     Console.WriteLine("Would you like to convert to a currency displayed above?: ");
-    Console.Write("Following options Yes,No: ");
-    input = Console.ReadLine();
-    if (input == "Yes")
+    Console.Write("Following optionsare Yes & No: ");
+    int inputValue;
+    input = Console.ReadLine()!.ToLower();
+
+    bool success = ValidInput(input);
+    while (!success)
     {
-        Console.Write("Selecta currency for conversion:  ");
+        Console.Write("Invalid input, please eneter yes or no: ");
+        input = Console.ReadLine()!.ToLower();
+        success = ValidInput(input);
+    }
+    if (input.ToLower() == "yes")
+    {
+        Console.Write("Select currency for conversion:  ");
         var secondInput = Console.ReadLine();
-        if (secondInput == "USD")
+        if (secondInput.ToLower() == "usd")
         {
+            symbolGenerator.SetRegionCurrencyTwoLetterValue("US");
             Console.Write("Enter a amount to convert to USD: ");
-            var amount = Console.ReadLine(); ;
-            Console.WriteLine(Math.Round(Convert.ToDouble(amount) * GBPTOUSD, 2));
+            var amount = Console.ReadLine();
+            rateMapper = new UsConversionRate();
+            double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
+            Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
 
         }
     }
-    else if (input == "No")
+    else if (input == "no")
     {
         Console.WriteLine("Thanks for using the currency converter! =)");
-        running = false; 
+      
     }
     else
     {
 
         Console.WriteLine("Sorry input not recongised.");
     }
-}
+
+    bool ValidInput(string input) {
+
+      return input.ToLower().Equals("yes") || input.ToLower().Equals("no");
+
+    }
