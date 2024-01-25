@@ -1,2 +1,16 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using ExchangeRateService;
+using ExchangeRateService.Model;
+
+
+
+
+
+
+ExchangeRateClientHandler client = new ExchangeRateClientHandler(new HttpClient(),new CurrencyRates());
+
+await client.GetCurrencyRates();
+
+
+
+
+

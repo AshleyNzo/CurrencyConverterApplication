@@ -38,7 +38,7 @@ CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
 
 
     Console.WriteLine("Would you like to convert to a currency displayed above?: ");
-    Console.Write("Following optionsare Yes & No: ");
+    Console.Write("Options - Yes & No: ");
     int inputValue;
     input = Console.ReadLine()!.ToLower();
 
@@ -51,18 +51,61 @@ CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
     }
     if (input.ToLower() == "yes")
     {
-        Console.Write("Select currency for conversion:  ");
-        var secondInput = Console.ReadLine();
-        if (secondInput.ToLower() == "usd")
+        Console.WriteLine("Currency options  - USD,EUR,YEN,AOA");
+        Console.Write("Select currency for conversion:");
+
+        var secondInput = Console.ReadLine()!.ToLower();
+        bool validCurrencyCode = ValidCurrencyInput(secondInput);
+        while (!validCurrencyCode) 
+        {
+            Console.WriteLine("Currency code no recongised, please enter a valid code");
+            Console.Write("Valid codes - USD,EUR,YEN,AOA:");
+            secondInput = Console.ReadLine()!.ToLower();
+            validCurrencyCode = ValidCurrencyInput(secondInput);
+
+        }
+        if (secondInput == "usd")
         {
             symbolGenerator.SetRegionCurrencyTwoLetterValue("US");
-            Console.Write("Enter a amount to convert to USD: ");
+            Console.Write("Enter a amount to convert to USD:");
             var amount = Console.ReadLine();
             rateMapper = new UsConversionRate();
             double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
             Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
 
         }
+        if (secondInput == "eur")
+         {
+            symbolGenerator.SetRegionCurrencyTwoLetterValue("FR");
+            Console.Write("Enter a amount to convert to EUR:");
+            var amount = Console.ReadLine();
+            rateMapper = new EurConversionRate();
+            double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
+            Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
+
+         }
+         if (secondInput == "yen")
+         {
+            symbolGenerator.SetRegionCurrencyTwoLetterValue("CN");
+            Console.Write("Enter a amount to convert to YEN:");
+            var amount = Console.ReadLine();
+            rateMapper = new YenConversionRate();
+            double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
+            Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
+
+         }
+         if (secondInput == "aoa")
+         {
+            symbolGenerator.SetRegionCurrencyTwoLetterValue("AO");
+            Console.Write("Enter a amount to convert to AOA:");
+            var amount = Console.ReadLine();
+            rateMapper = new AnConversionRate();
+            double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
+            Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
+
+         }
+
+
     }
     else if (input == "no")
     {
@@ -80,3 +123,10 @@ CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
       return input.ToLower().Equals("yes") || input.ToLower().Equals("no");
 
     }
+    
+    bool ValidCurrencyInput(string input) {
+
+        return input.ToLower().Equals("usd") || input.ToLower().Equals("eur") || input.ToLower().Equals("yen") || input.ToLower().Equals("aoa");
+
+}
+

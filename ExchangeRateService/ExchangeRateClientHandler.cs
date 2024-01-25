@@ -1,28 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ExchangeRateService.Model;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Security;
 
-namespace ExchangeRateService
+namespace ExchangeRateService;
+
+public class ExchangeRateClientHandler
 {
-    public class ExchangeRateClientHandler
-    {
-        private static HttpClient client = new()
-        {
-            BaseAddress = new Uri("currency-conversion-and-exchange-rates.p.rapidapi.com"),
-            DefaultRequestHeaders.Add("X-RapidAPI-Key", "92bc709628mshc5f0a69d2d6e2acp149118jsne4520e86fd35"),
-        };
+    //public IHttpClientFactory _clientFactory;
+    public HttpClient client; 
+    public CurrencyRates currencyRates;
+    public ExchangeRateClientHandler(HttpClient client,CurrencyRates currencyRates) { 
 
+        //_clientFactory = _client;
+        this.currencyRates = currencyRates;
+        this.client = client;
+    
+    }
 
+    public async Task GetCurrencyRates() {
 
+     
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://api.currencybeacon.com/v1/latest?base=GBP&api_key=Vqs7RqILy8UPsXw8HzI02u0XyomEONWy");
 
-        public static async Task GetCurrencyRates(HttpClient client) { 
         
+           
+        HttpResponseMessage response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            currencyRates = await response.Content.ReadFromJsonAsync<CurrencyRates>();
+
+        }
+        else
+        {
+            Console.WriteLine($"There was an error getting the request of currency rates{response.ReasonPhrase}");
 
         }
 
+        Console.WriteLine(currencyRates!.rates.ADA); 
+
+        
+        
+
 
     }
+
+
 }
