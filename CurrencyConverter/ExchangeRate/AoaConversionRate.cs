@@ -3,7 +3,7 @@ using ExchangeRateService.Model;
 
 namespace CurrencyConverter
 {
-    public class UsConversionRate : ICurrencyExchangeRate 
+    public class AoaConversionRate : ICurrencyExchangeRate
     {
 
         private readonly IExchangeRateClient exchangeRate;
@@ -11,7 +11,7 @@ namespace CurrencyConverter
         private Rates? currencyRates { get; set; }
 
 
-        public UsConversionRate(IExchangeRateClient exchange)
+        public AoaConversionRate(IExchangeRateClient exchange)
         {
             
             this.exchangeRate = exchange;

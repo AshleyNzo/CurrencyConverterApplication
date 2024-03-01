@@ -6,44 +6,33 @@ using System.Security;
 
 namespace ExchangeRateService;
 
-public class ExchangeRateClientHandler
+public class ExchangeRateClientHandler : IExchangeRateClient
 {
     //public IHttpClientFactory _clientFactory;
-    public HttpClient client; 
-    public CurrencyRates currencyRates;
-    public ExchangeRateClientHandler(HttpClient client,CurrencyRates currencyRates) { 
+    public HttpClient client;
 
-        //_clientFactory = _client;
-        this.currencyRates = currencyRates;
+    public CurrencyRates currencyRates { get; set; }
+
+    public ExchangeRateClientHandler(HttpClient client) { 
+
         this.client = client;
     
     }
 
-    public async Task GetCurrencyRates() {
+    public async Task<CurrencyRates> GetCurrencyRates() {
 
-     
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://api.currencybeacon.com/v1/latest?base=GBP&api_key=Vqs7RqILy8UPsXw8HzI02u0XyomEONWy");
-
-        
-           
-        HttpResponseMessage response = await client.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            currencyRates = await response.Content.ReadFromJsonAsync<CurrencyRates>();
-
+            currencyRates = await client.GetFromJsonAsync<CurrencyRates>("?base=GBP&api_key=Vqs7RqILy8UPsXw8HzI02u0XyomEONWy");
         }
-        else
+        catch (Exception ex) 
         {
-            Console.WriteLine($"There was an error getting the request of currency rates{response.ReasonPhrase}");
+
+            Console.WriteLine($"There was an error getting the request of currency rates{ex.Message}");
 
         }
 
-        Console.WriteLine(currencyRates!.rates.ADA); 
-
-        
-        
-
+        return currencyRates;
 
     }
 

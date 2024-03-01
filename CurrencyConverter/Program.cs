@@ -6,12 +6,33 @@
 
 
 using CurrencyConverter;
+using ExchangeRateService;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 
 
 
 
-CurrencyExchangeRate rateMapper;
+
+var services = new ServiceCollection();
+
+services.AddScoped<IExchangeRateClient,ExchangeRateClientHandler>();
+services.AddHttpClient<IExchangeRateClient, ExchangeRateClientHandler>(client =>
+
+    client.BaseAddress = new Uri("https://api.currencybeacon.com/v1/latest")
+) ;
+services.AddScoped<ICurrencyExchangeRate, AoaConversionRate>();
+var serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions
+{
+    ValidateOnBuild = true
+});
+
+
+
+ICurrencyExchangeRate rateMapper;
+
+var aoaMapper = serviceProvider.GetService<ICurrencyExchangeRate>();
 CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
 
 
@@ -22,19 +43,20 @@ CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
 
 
 
-   
-     rateMapper = new UsConversionRate();
+     /*
+     rateMapper = new UsConversionRate(new ExchangeRateClientHandler(new HttpClient()));
      symbolGenerator.SetRegionCurrencyTwoLetterValue("US");
      Console.WriteLine($"The conversion rate to USD, using the current exchange rate is: {symbolGenerator.GetCurrencySymbol()}{Math.Round(rateMapper.GetConverstionRate(), 2)}");
      symbolGenerator.SetRegionCurrencyTwoLetterValue("FR");
-     rateMapper = new EurConversionRate();
+     rateMapper = new EurConversionRate(new ExchangeRateClientHandler(new HttpClient()));
      Console.WriteLine($"The conversion rate to EUR, using the current exchange rate is: {Math.Round(rateMapper.GetConverstionRate(), 2)}{symbolGenerator.GetCurrencySymbol()}");
      symbolGenerator.SetRegionCurrencyTwoLetterValue("CN");
-     rateMapper = new YenConversionRate();
+     rateMapper = new YuanConversionRate(new ExchangeRateClientHandler(new HttpClient()));
      Console.WriteLine($"The conversion rate to YEN, using the current exchange rate is: {Math.Round(rateMapper.GetConverstionRate(), 2)}{symbolGenerator.GetCurrencySymbol()}");
+     */
+
      symbolGenerator.SetRegionCurrencyTwoLetterValue("AO");
-     rateMapper = new AnConversionRate();
-     Console.WriteLine($"The conversion rate to ANG, using the current exchange rate is: {Math.Round(rateMapper.GetConverstionRate(), 2)}{symbolGenerator.GetCurrencySymbol()}");
+     Console.WriteLine($"The conversion rate to ANG, using the current exchange rate is: {Math.Round(aoaMapper.GetConverstionRate(), 2)}{symbolGenerator.GetCurrencySymbol()}");
 
 
     Console.WriteLine("Would you like to convert to a currency displayed above?: ");
@@ -64,12 +86,13 @@ CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
             validCurrencyCode = ValidCurrencyInput(secondInput);
 
         }
+        /*
         if (secondInput == "usd")
         {
             symbolGenerator.SetRegionCurrencyTwoLetterValue("US");
             Console.Write("Enter a amount to convert to USD:");
             var amount = Console.ReadLine();
-            rateMapper = new UsConversionRate();
+            rateMapper = new UsConversionRate(new ExchangeRateClientHandler(new HttpClient()));
             double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
             Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
 
@@ -79,28 +102,28 @@ CurrencySymbolGenerator symbolGenerator = new CurrencySymbolGenerator();
             symbolGenerator.SetRegionCurrencyTwoLetterValue("FR");
             Console.Write("Enter a amount to convert to EUR:");
             var amount = Console.ReadLine();
-            rateMapper = new EurConversionRate();
+            rateMapper = new EurConversionRate(new ExchangeRateClientHandler(new HttpClient()));
             double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
             Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
 
          }
-         if (secondInput == "yen")
+         if (secondInput == "yuan")
          {
             symbolGenerator.SetRegionCurrencyTwoLetterValue("CN");
-            Console.Write("Enter a amount to convert to YEN:");
+            Console.Write("Enter a amount to convert to YUAN:");
             var amount = Console.ReadLine();
-            rateMapper = new YenConversionRate();
+            rateMapper = new YuanConversionRate(new ExchangeRateClientHandler(new HttpClient()));
             double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
             Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
 
          }
+         */
          if (secondInput == "aoa")
          {
             symbolGenerator.SetRegionCurrencyTwoLetterValue("AO");
             Console.Write("Enter a amount to convert to AOA:");
             var amount = Console.ReadLine();
-            rateMapper = new AnConversionRate();
-            double convertedAmount = Math.Round(Convert.ToDouble(amount) * rateMapper.GetConverstionRate(), 2);
+            double convertedAmount = Math.Round(Convert.ToDouble(amount) * aoaMapper.GetConverstionRate(), 2);
             Console.WriteLine($"{symbolGenerator.GetCurrencySymbol()}{convertedAmount}");
 
          }
