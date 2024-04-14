@@ -23,16 +23,16 @@ namespace CurrencyConverter
 
         public double GetConverstionRate()
         {
-            var currencyRates = exchangeRate.GetCurrencyRates().Result.rates;
+            var currencyRates = exchangeRate.GetCurrencyRates().Result.Rates;
 
-            return currencyRates.HKD;
+            return 100;//currencyRates.CNY;
         }
 
         public double ConvertCurrency(string originalCurrency)
         {
-            currencyRates = exchangeRate.GetCurrencyRates().Result.rates;
+            currencyRates = exchangeRate.GetCurrencyRates().Result.Rates.FirstOrDefault();
 
-            return ConvertToTwoDecimalPlace(currencyRates.HKD, Convert.ToDouble(originalCurrency));
+            return ConvertToTwoDecimalPlace(currencyRates.CNY, Convert.ToDouble(originalCurrency));
         }
 
         private double ConvertToTwoDecimalPlace(double conversionRate, double baseCurrency)

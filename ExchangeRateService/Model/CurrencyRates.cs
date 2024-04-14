@@ -9,7 +9,9 @@ namespace ExchangeRateService.Model
 
     public class CurrencyRates
     {
-        public Rates rates { get; set; }
+        public IEnumerable<Rates?> Rates { get; set; }
+        public DateTime Date { get; set; }
+        public string? Base { get; set; }
     }
     
 }

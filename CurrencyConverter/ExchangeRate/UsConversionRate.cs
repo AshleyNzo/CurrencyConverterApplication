@@ -19,18 +19,16 @@ namespace CurrencyConverter
 
         public  double GetConverstionRate()
         {
-            var currencyRates = exchangeRate.GetCurrencyRates().Result.rates;
+            var currencyRates = exchangeRate.GetCurrencyRates().Result.Rates.FirstOrDefault();
 
-            return currencyRates.AOA; 
+            return 100;//currencyRates.USD; 
         }
-
-
 
         public double ConvertCurrency(string originalCurrency)
         {
-            currencyRates = exchangeRate.GetCurrencyRates().Result.rates;
+            currencyRates = exchangeRate.GetCurrencyRates().Result.Rates.FirstOrDefault();
 
-            return ConvertToTwoDecimalPlace(currencyRates.AOA,Convert.ToDouble(originalCurrency));
+            return ConvertToTwoDecimalPlace(currencyRates.USD,Convert.ToDouble(originalCurrency));
         }
 
         private double ConvertToTwoDecimalPlace(double conversionRate, double baseCurrency)

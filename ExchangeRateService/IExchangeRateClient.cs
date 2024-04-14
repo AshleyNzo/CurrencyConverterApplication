@@ -4,6 +4,6 @@ namespace ExchangeRateService
 {
     public interface IExchangeRateClient
     {
-        Task<CurrencyRates> GetCurrencyRates();
+        Task<List<Rates>> GetCurrencyRates();
     }
 }
