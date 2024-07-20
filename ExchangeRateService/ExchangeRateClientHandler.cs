@@ -1,10 +1,8 @@
 ﻿using ExchangeRateService.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Security;
+
 
 namespace ExchangeRateService;
 
@@ -25,7 +23,7 @@ public class ExchangeRateClientHandler : IExchangeRateClient
         _logger = logger; 
     }
 
-    public async Task<List<Rates>> GetCurrencyRates() {
+    public async Task<Rates> GetCurrencyRates() {
 
 
         var apiKey = _configuration.GetValue<string>("Keys:APIKey");
@@ -41,7 +39,8 @@ public class ExchangeRateClientHandler : IExchangeRateClient
 
         }
 
-        return currencyRates.Rates.ToList();
+        
+        return currencyRates.Rates;
 
     }
 
